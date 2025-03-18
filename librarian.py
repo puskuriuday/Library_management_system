@@ -75,7 +75,27 @@ class Librarian:
         except Exception as e:
             print(e)
 
-
+    @classmethod
+    def del_stud(cls,roll_no):
+        try:
+            if not cls.crt_incharge:
+                print("Login first!!")
+            else:
+                conn , cur = dbconn()
+                query = 'select * from students where roll_no = %s'
+                cur.execute(query,(roll_no,))
+                mem = cur.fetchone()
+                if not mem:
+                    print("Invalid Roll Number !!")
+                else:
+                    query = 'delete from students where roll_no = %s'
+                    cur.execute(query,(roll_no,))
+                    comm(conn)
+                    clscur(cur)
+                    clsconn(conn)
+                    print("Deleted student successfilly...")
+        except Exception as e:
+            print(e)
 
 
     @classmethod
@@ -95,7 +115,7 @@ Librarian.Login(mail,password)
 print()
 print()
 print()
-Librarian.upd_stu('22X01A6245','mail','22x01a6245@gmail.com')
+Librarian.del_stud('22X01A6245')
 print()
 print()
 print()
