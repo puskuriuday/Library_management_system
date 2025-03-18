@@ -23,11 +23,58 @@ class Librarian:
         except Exception as error:          
             print(error)
 
-
-    def cte_student(name,mail,password):
-        
-        ...
+    @classmethod
+    def cte_student(cls,roll_no,name,mail,password = None):
+        try:
+            if not cls.crt_incharge:
+                print("Login first..")
+            else:
+                conn , cur = dbconn()
+                query = 'select * from students where roll_no = %s'
+                cur.execute(query,(roll_no,))
+                member = cur.fetchone()
+                if member:
+                    print("Roll Number already exits!!")
+                else:
+                    query = 'select * from students where mail = %s'
+                    cur.execute(query,(mail,))
+                    member = cur.fetchone()
+                    if member:
+                        print("Mail already exits!!")
+                    else:
+                        if not password:
+                            password = roll_no
+                        query = 'insert into students(roll_no,name,mail,password) values(%s,%s,%s,%s)'
+                        cur.execute(query,(roll_no,name,mail,password,))
+                        comm(conn)
+                        clscur(cur)
+                        clsconn(conn)
+                        print("created student successfully!!!")
+        except Exception as e:
+            print(e)
     
+    @classmethod
+    def upd_stu(cls,roll_no,attr,value):
+        try:
+            if not cls.crt_incharge:
+                print('login first')
+            else:
+                conn , cur = dbconn()
+                query = 'select * from students where roll_no = %s'
+                cur.execute(query,(roll_no,))
+                mem = cur.fetchone()
+                if not mem:
+                    print("Invalid Roll Number")
+                else:
+                    query = f'update students set {attr} = %s where roll_no = %s'
+                    cur.execute(query,(value,roll_no,))
+                    print("updated successfully !!!")
+                    comm(conn)
+                    clscur(cur)
+                    clsconn(conn)
+        except Exception as e:
+            print(e)
+
 
 
 
@@ -45,4 +92,11 @@ class Librarian:
 mail = "raju123@gmail.com"
 password = 'RajuXgw'
 Librarian.Login(mail,password)
+print()
+print()
+print()
+Librarian.upd_stu('22X01A6245','mail','22x01a6245@gmail.com')
+print()
+print()
+print()
 Librarian.Logout()
